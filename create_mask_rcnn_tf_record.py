@@ -94,7 +94,7 @@ def dict_to_tf_example(filename,
   encoded_png_io = io.BytesIO(encoded_mask_png)
   mask = PIL.Image.open(encoded_png_io)
   mask_np = np.asarray(mask.convert('L'))
-  if mask.format != 'PNG':
+  if mask.format != 'JPG':
     raise ValueError('Mask format not PNG')
 
   xmins = []
@@ -158,7 +158,7 @@ def dict_to_tf_example(filename,
   for mask in masks:
     img = PIL.Image.fromarray(mask)
     output = io.BytesIO()
-    img.save(output, format='PNG')
+    img.save(output, format='JPG')
     encoded_mask_png_list.append(output.getvalue())
   feature_dict['image/object/mask'] = (dataset_util.bytes_list_feature(encoded_mask_png_list))
 
