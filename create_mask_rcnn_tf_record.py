@@ -200,8 +200,8 @@ def create_tf_record(output_filename,
           shard_idx = idx % num_shards
           output_tfrecords[shard_idx].write(tf_example.SerializeToString())
           print("done")
-      except ValueError:
-        logging.warning('Invalid example: %s, ignoring.', ValueError)
+      except ValueError as e:
+        logging.warning('Invalid example: %s, ignoring.', e)
 
 def main(_):
   data_dir = FLAGS.data_dir
