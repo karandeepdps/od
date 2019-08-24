@@ -201,7 +201,7 @@ def create_tf_record(output_filename,
           output_tfrecords[shard_idx].write(tf_example.SerializeToString())
           print("done")
       except ValueError:
-        logging.warning('Invalid example: %s, ignoring.', xml_path)
+        logging.warning('Invalid example: %s, ignoring.', ValueError)
 
 def main(_):
   data_dir = FLAGS.data_dir
