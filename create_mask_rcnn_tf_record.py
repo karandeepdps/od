@@ -54,7 +54,7 @@ FLAGS = flags.FLAGS
 
 # mask_pixel: dictionary containing class name and value for pixels belog to mask of each class
 # change as per your classes and labeling
-mask_pixel = {'person':2}
+mask_pixel = {'person':84}
 
 def dict_to_tf_example(filename,
                        mask_path,
@@ -94,7 +94,7 @@ def dict_to_tf_example(filename,
   encoded_png_io = io.BytesIO(encoded_mask_png)
   mask = PIL.Image.open(encoded_png_io)
   mask_np = np.asarray(mask.convert('L'))
-  if mask.format != 'JPG':
+  if mask.format != 'PNG':
     raise ValueError('Mask format not PNG')
 
   xmins = []
@@ -158,7 +158,7 @@ def dict_to_tf_example(filename,
   for mask in masks:
     img = PIL.Image.fromarray(mask)
     output = io.BytesIO()
-    img.save(output, format='JPG')
+    img.save(output, format='PNG')
     encoded_mask_png_list.append(output.getvalue())
   feature_dict['image/object/mask'] = (dataset_util.bytes_list_feature(encoded_mask_png_list))
 
@@ -188,7 +188,7 @@ def create_tf_record(output_filename,
     for idx, example in enumerate(examples):
       if idx % 100 == 0:
         logging.info('On image %d of %d', idx, len(examples))
-      mask_path = os.path.join(annotations_dir, example + '.jpg')
+      mask_path = os.path.join(annotations_dir, example + '.png')
       image_path = os.path.join(image_dir, example + '.jpg')
 
       try:
@@ -200,8 +200,8 @@ def create_tf_record(output_filename,
           shard_idx = idx % num_shards
           output_tfrecords[shard_idx].write(tf_example.SerializeToString())
           print("done")
-      except ValueError as e:
-        logging.warning('Invalid example: %s, ignoring.', e)
+      except ValueError:
+        logging.warning('Invalid example: %s, ignoring.', xml_path)
 
 def main(_):
   data_dir = FLAGS.data_dir
